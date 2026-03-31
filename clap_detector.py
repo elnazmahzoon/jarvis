@@ -18,19 +18,21 @@ import sounddevice as sd
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-WELCOME_SOUND = os.path.join(os.path.dirname(os.path.abspath(__file__)), "welcome.mp3")
+WELCOME_SOUND = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "welcome.mp3")
 
 # ---------------------------------------------------------------------------
 # Detection parameters
 # ---------------------------------------------------------------------------
-SAMPLE_RATE    = 44100   # Hz — standard mic rate
-CHUNK_SIZE     = 1024    # samples (~23ms per chunk) — catches clap's sharp attack
-CHANNELS       = 1       # mono
+SAMPLE_RATE = 44100   # Hz — standard mic rate
+CHUNK_SIZE = 1024    # samples (~23ms per chunk) — catches clap's sharp attack
+CHANNELS = 1       # mono
 
-RMS_THRESHOLD  = 0.15    # float32 [0.0–1.0]; claps hit ~0.15–0.40, speech ~0.05–0.08
-MIN_CLAP_GAP   = 0.15    # seconds — prevents clap echo being counted as 2nd clap
-MAX_CLAP_GAP   = 0.80    # seconds — natural double-clap window
-COOLDOWN       = 2.0     # seconds — suppresses re-trigger after a double clap
+# float32 [0.0–1.0]; claps hit ~0.15–0.40, speech ~0.05–0.08
+RMS_THRESHOLD = 0.15
+MIN_CLAP_GAP = 0.10    # seconds — prevents clap echo being counted as 2nd clap
+MAX_CLAP_GAP = 0.80    # seconds — natural double-clap window
+COOLDOWN = 2.0     # seconds — suppresses re-trigger after a double clap
 
 # ---------------------------------------------------------------------------
 # Trigger queue — audio callback signals main thread; avoids spawning processes
@@ -41,9 +43,9 @@ trigger_queue: queue.Queue = queue.Queue()
 # ---------------------------------------------------------------------------
 # State (audio callback only)
 # ---------------------------------------------------------------------------
-clap_times   = deque(maxlen=2)  # timestamps of the last 2 detected claps
+clap_times = deque(maxlen=2)  # timestamps of the last 2 detected claps
 last_trigger = 0.0              # monotonic time of last double-clap trigger
-prev_rms     = 0.0              # RMS of the previous audio chunk
+prev_rms = 0.0              # RMS of the previous audio chunk
 
 
 def compute_rms(chunk: np.ndarray) -> float:
@@ -71,7 +73,8 @@ def audio_callback(indata, frames, time_info, status) -> None:
 
     if is_clap:
         clap_times.append(now)
-        logging.debug("Clap at t=%.3f  RMS=%.4f  prev_RMS=%.4f", now, rms, prev_rms)
+        logging.debug("Clap at t=%.3f  RMS=%.4f  prev_RMS=%.4f",
+                      now, rms, prev_rms)
 
         if len(clap_times) == 2:
             gap = clap_times[1] - clap_times[0]
@@ -88,17 +91,18 @@ def audio_callback(indata, frames, time_info, status) -> None:
 
 def handle_trigger() -> None:
     """Called from the main thread — safe to spawn processes here."""
-    logging.info("Double clap detected — playing welcome sound and opening Claude")
+    logging.info(
+        "Double clap detected — playing welcome sound and opening Claude")
 
     if os.path.isfile(WELCOME_SOUND):
-        # Wait for afplay to finish so the sound plays before Claude comes to front
-        subprocess.run(
+        subprocess.Popen(
             ["afplay", WELCOME_SOUND],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
     else:
-        logging.warning("welcome.mp3 not found at %s — skipping audio", WELCOME_SOUND)
+        logging.warning(
+            "welcome.mp3 not found at %s — skipping audio", WELCOME_SOUND)
 
     subprocess.Popen(
         ["open", "-a", "Claude"],
