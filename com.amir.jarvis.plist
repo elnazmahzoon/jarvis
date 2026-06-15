@@ -8,8 +8,8 @@
 
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/amir/dev/personal/jarvis/.venv/bin/python3</string>
-        <string>/Users/amir/dev/personal/jarvis/clap_detector.py</string>
+        <string>/Users/elliemahzoon/Local Sites/jarvis/.venv/bin/python3</string>
+        <string>/Users/elliemahzoon/Local Sites/jarvis/clap_detector.py</string>
     </array>
 
     <!-- Start automatically when the user logs in -->
@@ -22,10 +22,10 @@
 
     <!-- Logs written by the script go here; stdout/stderr from Python itself go below -->
     <key>StandardOutPath</key>
-    <string>/Users/amir/Library/Logs/jarvis/stdout.log</string>
+    <string>/Users/elliemahzoon/Library/Logs/jarvis/stdout.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/amir/Library/Logs/jarvis/stderr.log</string>
+    <string>/Users/elliemahzoon/Library/Logs/jarvis/stderr.log</string>
 
     <!-- LaunchAgents don't inherit the user shell PATH, so set it explicitly -->
     <key>EnvironmentVariables</key>
